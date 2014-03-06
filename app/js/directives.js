@@ -6,7 +6,7 @@
 angular.module('myApp.directives', [])
     .directive('cmp', function () {
         return {
-            restrict: 'E',
+            restrict: 'A',
             controller: 'cmpCtrl',
             replace: true,
             transclude: true,
