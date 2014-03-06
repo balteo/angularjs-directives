@@ -3,6 +3,6 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-  .controller('MyCtrl', [function() {
-
+  .controller('myCtrl', ['$scope', function($scope) {
+        $scope.name = 'test';
   }]);
