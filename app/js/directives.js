@@ -2,7 +2,6 @@
 
 /* Directives */
 
-
 angular.module('myApp.directives', [])
     .directive('cmp', function () {
         return {
@@ -17,7 +16,7 @@ angular.module('myApp.directives', [])
         };
     })
     .controller('cmpCtrl', function ($scope, $element, $attrs) {
-        $scope.$parent.$watch('name', function (newVal) {
+        $scope. $parent.$watch('name', function (newVal) {
             if (newVal) {
                 $scope.$parent.updatedSize = newVal.length;
                 console.log(newVal.length);
@@ -34,7 +33,7 @@ angular.module('myApp.directives', [])
     })
     .directive('notice', function () {
         return {
-            restrict: 'E',
+            restrict: 'A',
             require: '^cmp',
             replace: true,
             scope: {
@@ -42,7 +41,6 @@ angular.module('myApp.directives', [])
             },
             template: '<div>{{size}}</div>',
             link: function ($scope, $element, $attrs, cmpCtrl) {
-                console.log(cmpCtrl);
                 $scope.$parent.$watch('updatedSize', function (newVal) {
                     if (newVal) {
                         $scope.size = newVal;
