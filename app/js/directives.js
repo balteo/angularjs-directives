@@ -3,7 +3,7 @@
 /* Directives */
 
 angular.module('myApp.directives', [])
-    .directive('cmp', function(){
+    .directive('cmp', function () {
         return {
             restrict: 'E',
             controller: 'cmpCtrl',
@@ -15,14 +15,14 @@ angular.module('myApp.directives', [])
             template: '<div ng-transclude></div>'
         };
     })
-    .controller('cmpCtrl', function ($scope, $element, $attrs) {
-        $scope.$parent.$watch('name', function(newVal){
-            if(newVal){
+    .controller('cmpCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
+        $scope.$parent.$watch('name', function (newVal) {
+            if (newVal) {
                 $scope.$parent.updatedSize = newVal.length;
                 console.log(newVal.length);
             }
         }, true);
-    })
+    }])
     .directive('enhancedTextarea', function () {
         return {
             restrict: 'E',
@@ -40,10 +40,10 @@ angular.module('myApp.directives', [])
                 updatedSize: '='
             },
             template: '<div>{{size}}</div>',
-            link: function($scope, $element, $attrs, cmpCtrl){
+            link: function ($scope, $element, $attrs, cmpCtrl) {
                 console.log(cmpCtrl);
-                $scope.$parent.$watch('updatedSize', function(newVal){
-                    if(newVal){
+                $scope.$parent.$watch('updatedSize', function (newVal) {
+                    if (newVal) {
                         $scope.size = newVal;
                     }
                 }, true);
