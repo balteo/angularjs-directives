@@ -16,7 +16,6 @@ angular.module('myApp.directives', [])
     .controller('cmpCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
         $scope.$parent.$watch('name', function (newVal) {
             if (newVal) {
-                console.log('$scope.$id*: '+$scope.$id);
                 $scope.$parent.updatedSize = newVal.length;
             }
         }, true);
@@ -41,7 +40,6 @@ angular.module('myApp.directives', [])
             link: function ($scope, $element, $attrs, cmpCtrl) {
                 $scope.$parent.$watch('updatedSize', function (newVal) {
                     if (newVal) {
-                        console.log('$scope.$id**: '+$scope.$id);
                         $scope.size = newVal;
                     }
                 }, true);
