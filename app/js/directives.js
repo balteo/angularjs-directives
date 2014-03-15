@@ -5,10 +5,8 @@ angular.module('myApp.directives', [])
         return {
             restrict: 'A',
             controller: 'enhancedCtrl',
+            scope: {},
             transclude: true,
-            scope: {
-                name: '='
-            },
             template: '<div ng-transclude></div>'
         };
     })
@@ -45,6 +43,7 @@ angular.module('myApp.directives', [])
         return {
             restrict: 'A',
             require: '^enhanced',
+            scope: true,
             replace: true,
             template: '<textarea></textarea>',
             link: function ($scope, $element, $attrs, enhancedCtrl) {
