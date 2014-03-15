@@ -2,5 +2,5 @@
 
 angular.module('myApp.controllers', [])
   .controller('myCtrl', ['$scope', function($scope) {
-        $scope.text= 'test';
+        $scope.text= 'Hello world';
   }]);
