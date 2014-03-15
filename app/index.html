@@ -8,12 +8,9 @@
 <body>
 
 <div ng-controller="myCtrl">
-
-    <div enhanced-textarea ng-model="name"></div>
-     <div cmp>
-        <h3>{{name}}</h3>
-        <div notice></div>
-    </div>
+    <div x-text-area ng-model="name"></div>
+    <h3>{{name}}</h3>
+    <div notice></div>
 </div>
 
 <script src="lib/angular/angular.js"></script>

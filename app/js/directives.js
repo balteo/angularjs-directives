@@ -1,43 +1,28 @@
 'use strict';
 
 angular.module('myApp.directives', [])
-    .directive('cmp', function () {
-        return {
-            restrict: 'A',
-            controller: 'cmpCtrl',
-            replace: true,
-            transclude: true,
-            scope: {
-                name: '='
-            },
-            template: '<div ng-transclude></div>'
-        };
-    })
-    .controller('cmpCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
-        $scope.$parent.$watch('name', function (newVal) {
-            if (newVal) {
-                $scope.$parent.updatedSize = newVal.length;
-            }
-        }, true);
+    .controller('xTextAreaCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
+        console.log(this);
     }])
-    .directive('enhancedTextarea', function () {
+    .directive('xTextArea', function () {
         return {
             restrict: 'A',
+            controller: 'textAreaCtrl',
             replace: true,
-            transclude: true,
-            template: '<textarea ng-transclude></textarea>'
+            template: '<textarea></textarea>'
         };
     })
     .directive('notice', function () {
         return {
             restrict: 'A',
-            require: '^cmp',
+            require: 'xTextArea',
+            controller: 'xTextAreaCtrl',
             replace: true,
             scope: {
                 updatedSize: '='
             },
             template: '<div>{{size}}</div>',
-            link: function ($scope, $element, $attrs, cmpCtrl) {
+            link: function ($scope, $element, $attrs, xTextAreaCtrl) {
                 $scope.$parent.$watch('updatedSize', function (newVal) {
                     if (newVal) {
                         $scope.size = newVal;
