@@ -13,7 +13,7 @@ angular.module('myApp.directives', [])
             template: '<div ng-transclude></div>'
         };
     })
-    .controller('cmpCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
+    .controller('enhancedCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
         $scope.$parent.$watch('name', function (newVal) {
             if (newVal) {
                 $scope.$parent.updatedSize = newVal.length;
@@ -37,7 +37,7 @@ angular.module('myApp.directives', [])
                 updatedSize: '='
             },
             template: '<div>{{size}}</div>',
-            link: function ($scope, $element, $attrs, cmpCtrl) {
+            link: function ($scope, $element, $attrs, enchancedCtrl) {
                 $scope.$parent.$watch('updatedSize', function (newVal) {
                     if (newVal) {
                         $scope.size = newVal;
