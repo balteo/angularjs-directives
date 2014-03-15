@@ -1,5 +1,5 @@
-# angular-directives — A few angularjs directives
+## angular-directives — A few angularjs directives
 
-## Contact
+### Contact
 
-For more information contact me on balteo at gmail dot com
+For more information contact me on **balteo at gmail dot com**
