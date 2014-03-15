@@ -13,7 +13,6 @@ angular.module('myApp.directives', [])
         };
     })
     .controller('enhancedCtrl', ['$scope', function ($scope) {
-
         var info = function () {
             var size = 0;
             return {
