@@ -12,21 +12,34 @@ angular.module('myApp.directives', [])
             template: '<div ng-transclude></div>'
         };
     })
-    .controller('enhancedCtrl', ['$scope', '$element', '$attrs' , function ($scope) {
-        var size;
+    .controller('enhancedCtrl', ['$scope', function ($scope) {
+
+        var info = function () {
+            var size = 0;
+            return {
+                getSize: function () {
+                    return size;
+                },
+                setSize: function (newSize) {
+                    size = newSize;
+                }
+            };
+        }();
+
         var callback;
-        this.registerSizeChangedCallback = function(callback){
+
+        this.registerSizeChangedCallback = function (callback) {
             this.callback = callback;
         };
-        this.notifyObserver = function(){
+        this.notifyObserver = function () {
             this.callback();
         };
         this.setSize = function (size) {
-            this.size = size;
+            info.setSize(size);
             this.notifyObserver();
         };
         this.getSize = function () {
-            return this.size;
+            return info.getSize();
         };
     }])
     .directive('enhancedTextarea', function () {
@@ -51,7 +64,7 @@ angular.module('myApp.directives', [])
             scope: {},
             template: '<div>{{size}} characters</div>',
             link: function ($scope, $element, $attrs, enhancedCtrl) {
-                enhancedCtrl.registerSizeChangedCallback(function(){
+                enhancedCtrl.registerSizeChangedCallback(function () {
                     $scope.size = enhancedCtrl.getSize();
                 });
             }
