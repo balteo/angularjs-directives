@@ -1,6 +1,6 @@
 {
   "name": "angularjs-directives",
-  "description": "A starter project for AngularJS",
+  "description": "A few angularjs directives",
   "repository": "https://github.com/balteo/angular-directives",
   "devDependencies": {
     "phantomjs" : "~1.9",
