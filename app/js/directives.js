@@ -5,7 +5,6 @@ angular.module('myApp.directives', [])
         return {
             restrict: 'A',
             controller: 'enhancedCtrl',
-            replace: true,
             transclude: true,
             scope: {
                 name: '='
@@ -13,19 +12,35 @@ angular.module('myApp.directives', [])
             template: '<div ng-transclude></div>'
         };
     })
-    .controller('enhancedCtrl', ['$scope', '$element', '$attrs' , function ($scope, $element, $attrs) {
-        $scope.$parent.$watch('name', function (newVal) {
-            if (newVal) {
-                $scope.$parent.updatedSize = newVal.length;
-            }
-        }, true);
+    .controller('enhancedCtrl', ['$scope', '$element', '$attrs' , function ($scope) {
+        var size;
+        var callback;
+        this.registerSizeChangedCallback = function(callback){
+            this.callback = callback;
+        };
+        this.notifyObserver = function(){
+            this.callback();
+        };
+        this.setSize = function (size) {
+            this.size = size;
+            this.notifyObserver();
+        };
+        this.getSize = function () {
+            return this.size;
+        };
     }])
     .directive('enhancedTextarea', function () {
         return {
             restrict: 'A',
+            require: '^enhanced',
             replace: true,
-            transclude: true,
-            template: '<textarea ng-transclude></textarea>'
+            template: '<textarea></textarea>',
+            link: function ($scope, $element, $attrs, enhancedCtrl) {
+                $scope.$watch($attrs.ngModel, function (newVal) {
+                    console.log(newVal.length);
+                    enhancedCtrl.setSize(newVal.length);
+                });
+            }
         };
     })
     .directive('notice', function () {
@@ -33,16 +48,12 @@ angular.module('myApp.directives', [])
             restrict: 'A',
             require: '^enhanced',
             replace: true,
-            scope: {
-                updatedSize: '='
-            },
-            template: '<div>{{size}}</div>',
-            link: function ($scope, $element, $attrs, enchancedCtrl) {
-                $scope.$parent.$watch('updatedSize', function (newVal) {
-                    if (newVal) {
-                        $scope.size = newVal;
-                    }
-                }, true);
+            scope: {},
+            template: '<div>{{size}} characters</div>',
+            link: function ($scope, $element, $attrs, enhancedCtrl) {
+                enhancedCtrl.registerSizeChangedCallback(function(){
+                    $scope.size = enhancedCtrl.getSize();
+                });
             }
         };
     });
