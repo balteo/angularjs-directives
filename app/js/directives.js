@@ -50,8 +50,7 @@ angular.module('myApp.directives', [])
             template: '<textarea></textarea>',
             link: function ($scope, $element, $attrs, enhancedCtrl) {
                 $scope.$watch($attrs.ngModel, function (newVal) {
-                    console.log(newVal.length);
-                    enhancedCtrl.setSize(newVal.length);
+                   enhancedCtrl.setSize(newVal.length);
                 });
             }
         };
