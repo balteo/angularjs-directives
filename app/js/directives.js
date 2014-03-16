@@ -25,8 +25,8 @@ angular.module('myApp.directives', [])
                 setSize: function (newSize) {
                     size = newSize;
                 },
-                getActiveClass: function(){
-                    if(size<minThreshold || size> maxThreshold){
+                getActiveClass: function () {
+                    if (size < minThreshold || size > maxThreshold) {
                         return warnClass;
                     }
                     return infoClass;
@@ -49,8 +49,8 @@ angular.module('myApp.directives', [])
         this.getSize = function () {
             return info.getSize();
         };
-        this.getActiveClass = function (){
-           return info.getActiveClass();
+        this.getActiveClass = function () {
+            return info.getActiveClass();
         };
     }])
     .directive('enhancedTextarea', function () {
@@ -61,7 +61,7 @@ angular.module('myApp.directives', [])
             template: '<textarea></textarea>',
             link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
                 $scope.$watch($attrs.ngModel, function (newVal) {
-                   enhancedZoneCtrl.setSize(newVal.length);
+                    enhancedZoneCtrl.setSize(newVal.length);
                 });
             }
         };
