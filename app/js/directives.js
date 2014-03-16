@@ -19,6 +19,15 @@ angular.module('myApp.directives', [])
             var minThreshold = $attrs.minThreshold || 3;
             var maxThreshold = $attrs.maxThreshold || 250;
             var tolerance = $attrs.tolerance || 50;
+            var initialPrompt = $attrs.initialPrompt || 'enter at least % characters';
+            var nToGoPrompt = $attrs.nToGoPrompt || '% more to go...';
+            var nLeftPrompt = $attrs.nLeftPrompt || '% characters left';
+            var tooLongByPrompt = $attrs.tooLongByPrompt || 'too long by % characters';
+
+            function expandMessage(rawMessage, n) {
+                return rawMessage.replace('%', n);
+            }
+
             return {
                 getSize: function () {
                     return size;
@@ -30,10 +39,24 @@ angular.module('myApp.directives', [])
                     if (size > maxThreshold - tolerance && size < maxThreshold) {
                         return warnClass;
                     }
-                    else if (size > maxThreshold) {
+                    else if (size >= maxThreshold) {
                         return errorClass;
                     }
                     return infoClass;
+                },
+                getCurrentMessage: function () {
+                    if (size === 0) {
+                        return expandMessage(initialPrompt, minThreshold);
+                    }
+                    else if (size > 0 && size < minThreshold) {
+                        return expandMessage(nToGoPrompt, minThreshold - size);
+                    }
+                    else if(size >= minThreshold && size <= maxThreshold){
+                        return expandMessage(nLeftPrompt, maxThreshold -size);
+                    }
+                    else {
+                        return expandMessage(tooLongByPrompt, size - maxThreshold);
+                    }
                 }
             };
         }();
@@ -56,6 +79,9 @@ angular.module('myApp.directives', [])
         this.getActiveClass = function () {
             return info.getActiveClass();
         };
+        this.getCurrentMessage = function () {
+            return info.getCurrentMessage();
+        };
     }])
     .directive('enhancedInput', function () {
         return {
@@ -75,10 +101,11 @@ angular.module('myApp.directives', [])
             require: '^enhancedZone',
             replace: true,
             scope: {},
-            template: '<div ng-class="activeClass">{{size}}</div>',
+            template: '<div ng-class="activeClass">{{message}}</div>',
             link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
                 enhancedZoneCtrl.registerTextChangedCallback(function () {
                     $scope.size = enhancedZoneCtrl.getSize();
+                    $scope.message = enhancedZoneCtrl.getCurrentMessage();
                     $scope.activeClass = enhancedZoneCtrl.getActiveClass();
                 });
             }
