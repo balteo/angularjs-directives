@@ -13,11 +13,11 @@ angular.module('myApp.directives', [])
     .controller('enhancedZoneCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
         var info = function () {
             var size = 0;
-            var infoClass = $attrs.infoClass;
-            var warnClass = $attrs.warnClass;
-            var errorClass = $attrs.errorClass;
-            var minThreshold = $attrs.minThreshold;
-            var maxThreshold = $attrs.maxThreshold;
+            var infoClass = $attrs.infoClass || '';
+            var warnClass = $attrs.warnClass || '';
+            var errorClass = $attrs.errorClass || '';
+            var minThreshold = $attrs.minThreshold || 3;
+            var maxThreshold = $attrs.maxThreshold || 500;
             return {
                 getSize: function () {
                     return size;
