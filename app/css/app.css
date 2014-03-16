@@ -1,1 +1,16 @@
 /* app css stylesheet */
+.info {
+    color: cornflowerblue;
+}
+
+.warning {
+    color: orange;
+}
+
+.error {
+    color: red;
+}
+
+.bold {
+    font-weight: bold;
+}

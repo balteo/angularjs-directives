@@ -1,31 +1,42 @@
 'use strict';
 
 angular.module('myApp.directives', [])
-    .directive('enhanced', function () {
+    .directive('enhancedZone', function () {
         return {
             restrict: 'A',
-            controller: 'enhancedCtrl',
+            controller: 'enhancedZoneCtrl',
             scope: {},
             transclude: true,
             template: '<div ng-transclude></div>'
         };
     })
-    .controller('enhancedCtrl', ['$scope', function ($scope) {
+    .controller('enhancedZoneCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
         var info = function () {
             var size = 0;
+            var infoClass = $attrs.infoClass;
+            var warnClass = $attrs.warnClass;
+            var errorClass = $attrs.errorClass;
+            var minThreshold = $attrs.minThreshold;
+            var maxThreshold = $attrs.maxThreshold;
             return {
                 getSize: function () {
                     return size;
                 },
                 setSize: function (newSize) {
                     size = newSize;
+                },
+                getActiveClass: function(){
+                    if(size<minThreshold || size> maxThreshold){
+                        return warnClass;
+                    }
+                    return infoClass;
                 }
             };
         }();
 
         var callback;
 
-        this.registerSizeChangedCallback = function (callback) {
+        this.registerTextChangedCallback = function (callback) {
             this.callback = callback;
         };
         this.notifyObserver = function () {
@@ -38,16 +49,19 @@ angular.module('myApp.directives', [])
         this.getSize = function () {
             return info.getSize();
         };
+        this.getActiveClass = function (){
+           return info.getActiveClass();
+        };
     }])
     .directive('enhancedTextarea', function () {
         return {
             restrict: 'A',
-            require: '^enhanced',
+            require: '^enhancedZone',
             replace: true,
             template: '<textarea></textarea>',
-            link: function ($scope, $element, $attrs, enhancedCtrl) {
+            link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
                 $scope.$watch($attrs.ngModel, function (newVal) {
-                   enhancedCtrl.setSize(newVal.length);
+                   enhancedZoneCtrl.setSize(newVal.length);
                 });
             }
         };
@@ -55,13 +69,14 @@ angular.module('myApp.directives', [])
     .directive('notice', function () {
         return {
             restrict: 'A',
-            require: '^enhanced',
+            require: '^enhancedZone',
             replace: true,
             scope: {},
-            template: '<div>{{size}} characters</div>',
-            link: function ($scope, $element, $attrs, enhancedCtrl) {
-                enhancedCtrl.registerSizeChangedCallback(function () {
-                    $scope.size = enhancedCtrl.getSize();
+            template: '<div ng-class="activeClass">{{size}}</div>',
+            link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
+                enhancedZoneCtrl.registerTextChangedCallback(function () {
+                    $scope.size = enhancedZoneCtrl.getSize();
+                    $scope.activeClass = enhancedZoneCtrl.getActiveClass();
                 });
             }
         };
