@@ -39,7 +39,7 @@ angular.module('myApp.directives', [])
                     if (size > maxThreshold - tolerance && size < maxThreshold) {
                         return warnClass;
                     }
-                    else if (size >= maxThreshold) {
+                    else if (size > maxThreshold) {
                         return errorClass;
                     }
                     return infoClass;
