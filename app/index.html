@@ -8,8 +8,8 @@
 <body>
 
 <div ng-controller="myCtrl">
-    <div enhanced-zone info-class="info" warn-class="warning" error-class="error" class="bold" min-threshold="5" max-threshold="50">
-        <div enhanced-textarea ng-model="text"></div>
+    <div enhanced-zone info-class="info" warn-class="warning" error-class="error" class="bold" min-threshold="5" max-threshold="50" tolerance="10">
+        <textarea enhanced-input ng-model="text"></textarea>
         <h3>{{text}}</h3>
         <div notice></div>
     </div>

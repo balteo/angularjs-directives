@@ -13,11 +13,12 @@ angular.module('myApp.directives', [])
     .controller('enhancedZoneCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
         var info = function () {
             var size = 0;
-            var infoClass = $attrs.infoClass || '';
-            var warnClass = $attrs.warnClass || '';
-            var errorClass = $attrs.errorClass || '';
+            var infoClass = $attrs.infoClass || '';
+            var warnClass = $attrs.warnClass || '';
+            var errorClass = $attrs.errorClass || '';
             var minThreshold = $attrs.minThreshold || 3;
-            var maxThreshold = $attrs.maxThreshold || 500;
+            var maxThreshold = $attrs.maxThreshold || 250;
+            var tolerance = $attrs.tolerance || 50;
             return {
                 getSize: function () {
                     return size;
@@ -26,8 +27,11 @@ angular.module('myApp.directives', [])
                     size = newSize;
                 },
                 getActiveClass: function () {
-                    if (size < minThreshold || size > maxThreshold) {
+                    if (size > maxThreshold - tolerance && size < maxThreshold) {
                         return warnClass;
+                    }
+                    else if (size > maxThreshold) {
+                        return errorClass;
                     }
                     return infoClass;
                 }
@@ -53,12 +57,11 @@ angular.module('myApp.directives', [])
             return info.getActiveClass();
         };
     }])
-    .directive('enhancedTextarea', function () {
+    .directive('enhancedInput', function () {
         return {
             restrict: 'A',
             require: '^enhancedZone',
             replace: true,
-            template: '<textarea></textarea>',
             link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
                 $scope.$watch($attrs.ngModel, function (newVal) {
                     enhancedZoneCtrl.setSize(newVal.length);
