@@ -8,11 +8,26 @@
 <body>
 
 <div ng-controller="myCtrl">
-    <div enhanced-zone info-class="info" warn-class="warning" error-class="error" class="bold" min-threshold="5" max-threshold="50" tolerance="10" initial-prompt="enter at least % characters" n-to-go-prompt="% more to go..." n-left-prompt="% characters left" too-long-by-prompt="too long by % characters">
-        <textarea enhanced-input ng-model="text" placeholder="Enter what's on your mind..."></textarea>
-        <div notice></div>
-        <h3>{{text}}</h3>
-    </div>
+
+    <form name="testForm">
+        <div enhanced-zone info-class="info" warn-class="warning" error-class="error" class="bold" tolerance="10" initial-prompt="enter at least % characters" n-to-go-prompt="% more to go..." n-left-prompt="% characters left" too-long-by-prompt="too long by % characters">
+            <textarea enhanced-input ng-model="text" min="5" max="20" placeholder="Enter what's on your mind..." name="testInput"></textarea>
+            <input type="text" name="testInput2" ng-model="text2" required ng-maxlength="6" />
+            <div notice></div>
+            <h3>{{text}}</h3>
+            <ul>
+                <li>$valid : {{testForm.testInput.$valid}}</li>
+                <li>$dirty : {{testForm.testInput.$dirty}}</li>
+                <li>$error : {{testForm.testInput.$error}}</li>
+            </ul>
+            <ul>
+                <li>$valid : {{testForm.testInput2.$valid}}</li>
+                <li>$dirty : {{testForm.testInput2.$dirty}}</li>
+                <li>$error : {{testForm.testInput2.$error}}</li>
+            </ul>
+
+        </div>
+    </form>
 </div>
 
 <script src="lib/angular/angular.js"></script>
