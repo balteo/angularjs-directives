@@ -11,86 +11,88 @@ angular.module('myApp.directives', [])
         };
     })
     .controller('enhancedZoneCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
-        var info = function () {
-            var size = 0;
-            var infoClass = $attrs.infoClass || '';
-            var warnClass = $attrs.warnClass || '';
-            var errorClass = $attrs.errorClass || '';
-            var minThreshold = $attrs.minThreshold || 3;
-            var maxThreshold = $attrs.maxThreshold || 250;
-            var tolerance = $attrs.tolerance || 50;
-            var initialPrompt = $attrs.initialPrompt || 'enter at least % characters';
-            var nToGoPrompt = $attrs.nToGoPrompt || '% more to go...';
-            var nLeftPrompt = $attrs.nLeftPrompt || '% characters left';
-            var tooLongByPrompt = $attrs.tooLongByPrompt || 'too long by % characters';
+        var size = 0;
+        var min = 3;
+        var max = 250;
+        var defaultOptions = {
+            infoClass: '',
+            warnClass: '',
+            errorClass: '',
+            tolerance: 50,
+            initialPrompt: 'enter at least % characters',
+            nToGoPrompt: '% more to go...',
+            nLeftPrompt: '% characters left',
+            tooLongByPrompt: 'too long by % characters'
+        };
 
-            function expandMessage(rawMessage, n) {
-                return rawMessage.replace('%', n);
-            }
+        var options = angular.extend({}, defaultOptions, $attrs);
 
-            return {
-                getSize: function () {
-                    return size;
-                },
-                setSize: function (newSize) {
-                    size = newSize;
-                },
-                getActiveClass: function () {
-                    if (size > maxThreshold - tolerance && size <= maxThreshold) {
-                        return warnClass;
-                    }
-                    else if (size > maxThreshold) {
-                        return errorClass;
-                    }
-                    return infoClass;
-                },
-                getCurrentMessage: function () {
-                    if (size === 0) {
-                        return expandMessage(initialPrompt, minThreshold);
-                    }
-                    else if (size > 0 && size < minThreshold) {
-                        return expandMessage(nToGoPrompt, minThreshold - size);
-                    }
-                    else if(size >= minThreshold && size <= maxThreshold){
-                        return expandMessage(nLeftPrompt, maxThreshold -size);
-                    }
-                    else {
-                        return expandMessage(tooLongByPrompt, size - maxThreshold);
-                    }
-                }
-            };
-        }();
+        function expandMessage(rawMessage, n) {
+            return rawMessage.replace('%', n);
+        }
 
         var callback;
+
+        this.setMinMax = function (minMax) {
+            min = minMax.min;
+            max = minMax.max;
+        };
 
         this.registerTextChangedCallback = function (callback) {
             this.callback = callback;
         };
         this.notifyObserver = function () {
-            this.callback();
+            if (angular.isFunction(this.callback)) {
+                this.callback();
+            }
         };
-        this.setSize = function (size) {
-            info.setSize(size);
+        this.setSize = function (newSize) {
+            size = newSize;
             this.notifyObserver();
         };
         this.getSize = function () {
-            return info.getSize();
+            return size;
         };
         this.getActiveClass = function () {
-            return info.getActiveClass();
+            if (size > max - options.tolerance && size <= max) {
+                return options.warnClass;
+            }
+            else if (size > max) {
+                return options.errorClass;
+            }
+            return options.infoClass;
         };
         this.getCurrentMessage = function () {
-            return info.getCurrentMessage();
+            if (size === 0) {
+                return expandMessage(options.initialPrompt, min);
+            }
+            else if (size > 0 && size < min) {
+                return expandMessage(options.nToGoPrompt, min - size);
+            }
+            else if (size >= min && size <= max) {
+                return expandMessage(options.nLeftPrompt, max - size);
+            }
+            else {
+                return expandMessage(options.tooLongByPrompt, size - max);
+            }
         };
     }])
     .directive('enhancedInput', function () {
         return {
             restrict: 'A',
-            require: '^enhancedZone',
+            require: ['^enhancedZone', '^ngModel'],
             replace: true,
-            link: function ($scope, $element, $attrs, enhancedZoneCtrl) {
+            link: function ($scope, $element, $attrs, controllers) {
+                var enhancedZoneCtrl = controllers[0];
+                var ngModelCtrl = controllers[1];
+                enhancedZoneCtrl.setMinMax({min: $attrs.min, max: $attrs.max});
                 $scope.$watch($attrs.ngModel, function (newVal) {
                     enhancedZoneCtrl.setSize(newVal.length);
+                });
+                ngModelCtrl.$parsers.push(function (viewValue, arg2) {
+                    ngModelCtrl.$setValidity('enhancedMin', viewValue.length >= $attrs.min);
+                    ngModelCtrl.$setValidity('enhancedMax', viewValue.length <= $attrs.max);
+                    return viewValue;
                 });
             }
         };
